@@ -1,5 +1,7 @@
 package cache
 
+import "fmt"
+
 type Cache interface {
 	Set(key string, value interface{}) error
 	Get(key string) (interface{}, error)
@@ -11,30 +13,30 @@ type CacheItem struct {
 	Value interface{}
 }
 
-type Cache struct {
+type MemoryCache struct {
 	items map[string]CacheItem
 }
 
-func NewCache() *Cache {
-	return &Cache{
+func NewMemoryCache() *MemoryCache {
+	return &MemoryCache{
 		items: make(map[string]CacheItem),
 	}
 }
 
-func (c *Cache) Set(key string, value interface{}) error {
+func (c *MemoryCache) Set(key string, value interface{}) error {
 	c.items[key] = CacheItem{Key: key, Value: value}
 	return nil
 }
 
-func (c *Cache) Get(key string) (interface{}, error) {
+func (c *MemoryCache) Get(key string) (interface{}, error) {
 	item, exists := c.items[key]
-	if !exists {
-		return nil, nil
+	if (!exists) {
+		return nil, fmt.Errorf("item not found")
 	}
 	return item.Value, nil
 }
 
-func (c *Cache) Delete(key string) error {
+func (c *MemoryCache) Delete(key string) error {
 	delete(c.items, key)
 	return nil
 }

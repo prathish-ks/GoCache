@@ -2,21 +2,17 @@ package main
 
 import (
     "log"
-    "net/http"
     "gocache/internal/config"
     "gocache/internal/server"
 )
 
 func main() {
-    cfg, err := config.LoadConfig()
-    if err != nil {
-        log.Fatalf("could not load config: %v", err)
-    }
+    cfg := config.LoadConfig()
 
-    srv := server.NewServer(cfg)
-    log.Printf("Starting server on %s", cfg.ServerAddress)
+    srv := server.New(cfg)
+    log.Printf("Starting server on %s", cfg.Port)
 
-    if err := http.ListenAndServe(cfg.ServerAddress, srv.Router); err != nil {
+    if err := srv.ListenAndServe(); err != nil {
         log.Fatalf("could not start server: %v", err)
     }
 }
